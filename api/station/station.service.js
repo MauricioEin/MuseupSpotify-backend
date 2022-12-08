@@ -5,14 +5,17 @@ const ObjectId = require('mongodb').ObjectId
 
 async function query(filterBy = { txt: '' }) {
     try {
-        logger.debug('FILTERBY!', filterBy)
+        // logger.debug('FILTERBY!', filterBy)
         const criteria = {
             name: { $regex: filterBy.name || '', $options: 'i' },
         }
         if (filterBy.category) criteria.category = filterBy.category
-        if (filterBy.others) criteria.owner = { _id: { $ne: ObjectId(filterBy.others) } }
-        if (filterBy.owner) criteria.owner= {_id : ObjectId(filterBy.owner)}
-        logger.debug('CRITERIA', criteria)
+        if (filterBy.others) {
+            criteria['owner._id'] = { "$ne": filterBy.others }
+            criteria['owner.username'] = { "$ne": "MuseUp" }
+        }
+        if (filterBy.owner) criteria['owner._id'] = filterBy.owner
+        if (filterBy.owner) logger.debug('CRITERIA', criteria)
 
         const collection = await dbService.getCollection('station')
         // logger.debug('collection')
