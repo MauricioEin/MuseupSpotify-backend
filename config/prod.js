@@ -1,4 +1,4 @@
 module.exports = {
   dbURL: 'mongodb+srv://MuseUp:museforever@cluster0.7bgfjlk.mongodb.net/?retryWrites=true&w=majority',
-  dbName : 'tester_db'
+  dbName : 'station_db'
 }
