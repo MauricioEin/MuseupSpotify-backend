@@ -25,7 +25,9 @@ async function getStationById(req, res) {
   logger.debug('getting by id')
   try {
     const stationId = req.params.id
+    console.log('id', stationId)
     const station = await stationService.getById(stationId)
+    logger.debug('station', station)
     res.json(station)
   } catch (err) {
     logger.error('Failed to get station', err)
