@@ -46,13 +46,13 @@ function setupSocketAPI(http) {
         //     logger.info(`updating station socket`, station)
         //     socket.broadcast('update-station', station)
         // })
-        socket.on('add-song', (data) => {
+        socket.on('update-station', (data) => {
             // logger.info('stationId', stationId)
             // logger.info('song', song)
             // logger.info('args', args)
             // console.log('data', data)
 
-            socket.broadcast.emit('song-added', data)
+            socket.broadcast.emit('station-updated', data)
         })
 
     })
