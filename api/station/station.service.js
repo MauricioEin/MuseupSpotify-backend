@@ -20,7 +20,36 @@ async function query(filterBy = { txt: '' }) {
         const collection = await dbService.getCollection('station')
         // logger.debug('collection')
         // logger.debug('criteria', criteria)
-        var stations = await collection.find(criteria).toArray()
+
+
+
+        // var stations = await collection.find(criteria).toArray()
+
+        var stations = await collection.aggregate([
+            {
+                $match: criteria
+            },
+            { $addFields: { firstSong: { $first: "$songs" } } },
+            {
+                $project:
+                {
+                    _id: 1,
+                    name: 1,
+                    desc: 1,
+                    imgUrl: 1,
+                    owner: { _id: 1, username: 1 },
+                    // songs: 1,
+                    firstSong: {
+                        id: 1,
+                        title: 1,
+                        youtubeId: 1,
+                        imgUrl: 1
+                    }
+                }
+            }
+        ]).toArray()
+
+
         return stations
     } catch (err) {
         logger.error('cannot find stations', err)
@@ -30,8 +59,13 @@ async function query(filterBy = { txt: '' }) {
 
 async function getById(stationId) {
     try {
+        logger.debug('stationId', stationId, typeof(stationId))
         const collection = await dbService.getCollection('station')
+        logger.debug('stationId2')
+
         const station = collection.findOne({ _id: ObjectId(stationId) })
+        // logger.debug('station', station)
+
         return station
     } catch (err) {
         logger.error(`while finding station ${stationId}`, err)
