@@ -29,7 +29,12 @@ async function query(filterBy = { txt: '' }) {
             {
                 $match: criteria
             },
-            { $addFields: { firstSong: { $first: "$songs" } } },
+            {
+                $addFields: {
+                    firstSong: { $first: "$songs" },
+                    createdAt: { $toDate: "$_id" }
+                }
+            },
             {
                 $project:
                 {
@@ -38,14 +43,17 @@ async function query(filterBy = { txt: '' }) {
                     desc: 1,
                     imgUrl: 1,
                     owner: { _id: 1, username: 1 },
-                    // songs: 1,
                     firstSong: {
                         id: 1,
                         title: 1,
                         youtubeId: 1,
                         imgUrl: 1
-                    }
+                    },
+                    createdAt: 1
                 }
+            },
+            {
+                $sort: { "createdAt": -1 }
             }
         ]).toArray()
 
@@ -59,7 +67,7 @@ async function query(filterBy = { txt: '' }) {
 
 async function getById(stationId) {
     try {
-        logger.debug('stationId', stationId, typeof(stationId))
+        logger.debug('stationId', stationId, typeof (stationId))
         const collection = await dbService.getCollection('station')
         logger.debug('stationId2')
 
