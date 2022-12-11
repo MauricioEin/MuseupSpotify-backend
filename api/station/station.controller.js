@@ -11,8 +11,6 @@ async function getStations(req, res) {
       owner:req.query.owner || '',
       others:req.query.others || '',
     }   
-     logger.debug('filterBy',filterBy)
-
     const stations = await stationService.query(filterBy)
     res.json(stations)
   } catch (err) {
@@ -25,9 +23,7 @@ async function getStationById(req, res) {
   logger.debug('getting by id')
   try {
     const stationId = req.params.id
-    console.log('id', stationId)
     const station = await stationService.getById(stationId)
-    logger.debug('station', station)
     res.json(station)
   } catch (err) {
     logger.error('Failed to get station', err)
@@ -63,6 +59,7 @@ async function updateStation(req, res) {
 
   try {
     const station = req.body
+
     const updatedStation = await stationService.update(station)
     res.json(updatedStation)
   } catch (err) {
