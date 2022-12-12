@@ -67,9 +67,7 @@ async function query(filterBy = { txt: '' }) {
 
 async function getById(stationId) {
     try {
-        logger.debug('stationId', stationId, typeof (stationId))
         const collection = await dbService.getCollection('station')
-        logger.debug('stationId2')
 
         const station = collection.findOne({ _id: ObjectId(stationId) })
         // logger.debug('station', station)
@@ -111,6 +109,7 @@ async function update(station) {
             songs: station.songs,
             followers: station.followers,
             imgUrl: station.imgUrl,
+            clr: station.clr
         }
         const collection = await dbService.getCollection('station')
         await collection.updateOne({ _id: ObjectId(station._id) }, { $set: stationToSave })
