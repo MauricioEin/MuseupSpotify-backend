@@ -4,11 +4,7 @@
     "description": "production ready server",
     "main": "server.js",
     "scripts": {
-<<<<<<< HEAD
         "start": "set NODE_ENV=production&&node server.js",
-=======
-        "start": "set NODE_ENV=production&&node server.js", 
->>>>>>> da6c9e7d2ee66829ac05625b0875e80bcfe4e40f
         "server:dev": "nodemon server.js",
         "server:prod": "set NODE_ENV=production&&node server.js"
     },
