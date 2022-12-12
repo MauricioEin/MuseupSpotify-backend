@@ -109,21 +109,29 @@ async function removeCarMsg(req, res) {
   }
 }
 
+const API_KEY = [
+  '1e917d5048f6cfb7320715ab04aad672',
+  '4e363a325cb491b46e4c3c11b59c8cb7',
+  'fd570e639221de7111ff1ea46aa6dbde',
+]
+let keyIdx = 0
+
 async function getLyrics(req, res) {
   try {
     console.log('GOT HEREEE')
     console.log('req.query.q', req.query.q)
+    const apiKey= '1e917d5048f6cfb7320715ab04aad672' // 'fd570e639221de7111ff1ea46aa6dbde'
 
     const { artist, track } = _getTrackObject(req.query.q)//fd570e639221de7111ff1ea46aa6dbde // 4e363a325cb491b46e4c3c11b59c8cb7
-      var trackRes = await axios.get(`https://api.musixmatch.com/ws/1.1/track.search?apikey=fd570e639221de7111ff1ea46aa6dbde&q_artist=Doja%20Cat&q_artist=${artist}&q_track=${track}&f_has_lyrics=1`)
+      var trackRes = await axios.get(`https://api.musixmatch.com/ws/1.1/track.search?apikey=${apiKey}&q_artist=Doja%20Cat&q_artist=${artist}&q_track=${track}&f_has_lyrics=1`)
       var trackId = trackRes.data.message.body.track_list[0]?.track?.track_id || null
       console.log('TRACKID:', trackId)
       if (!trackId) {
-        trackRes = await axios.get(`https://api.musixmatch.com/ws/1.1/track.search?apikey=fd570e639221de7111ff1ea46aa6dbde&q_artist=Doja%20Cat&q=${req.query.q}&f_has_lyrics=1`)
+        trackRes = await axios.get(`https://api.musixmatch.com/ws/1.1/track.search?apikey=${apiKey}&q_artist=Doja%20Cat&q=${req.query.q}&f_has_lyrics=1`)
         var trackId = trackRes.data.message.body.track_list[0]?.track?.track_id || null
       }
       if (!trackId) return res.send('')
-      const res2 = await axios.get('https://api.musixmatch.com/ws/1.1/track.lyrics.get?apikey=fd570e639221de7111ff1ea46aa6dbde&track_id=' + trackId)
+      const res2 = await axios.get(`https://api.musixmatch.com/ws/1.1/track.lyrics.get?apikey=${apiKey}&track_id=` + trackId)
       const lyr = res2.data.message.body.lyrics.lyrics_body
       console.log('lyr:', lyr)
       res.json(lyr)
