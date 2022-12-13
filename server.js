@@ -23,8 +23,6 @@ if (process.env.NODE_ENV === 'production') {
 
 const authRoutes = require('./api/auth/auth.routes')
 const userRoutes = require('./api/user/user.routes')
-const reviewRoutes = require('./api/review/review.routes')
-const carRoutes = require('./api/car/car.routes')
 const stationRoutes = require('./api/station/station.routes')
 const lyricsRoutes = require('./api/lyrics/lyrics.routes')
 const {setupSocketAPI} = require('./services/socket.service')
