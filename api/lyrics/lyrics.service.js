@@ -1,9 +1,45 @@
-const dbService = require('../../services/db.service')
+const axios = require('axios')
+
+
 const logger = require('../../services/logger.service')
 const utilService = require('../../services/util.service')
-const ObjectId = require('mongodb').ObjectId
 
-async function query(filterBy={txt:''}) {
+
+async function getLyrics(apiKey, artist, track, searchStr) {
+    var trackRes = await axios.get(`https://api.musixmatch.com/ws/1.1/track.search?apikey=${apiKey}&q_artist=Doja%20Cat&q_artist=${artist}&q_track=${track}&f_has_lyrics=1`)
+    var trackId = trackRes.data.message.body.track_list[0]?.track?.track_id || null
+    console.log('TRACKID:', trackId)
+    if (!trackId) {
+        trackRes = await axios.get(`https://api.musixmatch.com/ws/1.1/track.search?apikey=${apiKey}&q_artist=Doja%20Cat&q=${searchStr}&f_has_lyrics=1`)
+        var trackId = trackRes.data.message.body.track_list[0]?.track?.track_id || null
+    }
+    if (!trackId) return ''
+    const res2 = await axios.get(`https://api.musixmatch.com/ws/1.1/track.lyrics.get?apikey=${apiKey}&track_id=` + trackId)
+    return `${artist.trim()}\n${track.trim()}\n\n` + res2.data.message.body.lyrics.lyrics_body
+}
+
+function getTrackObject(str) {
+    var idx = str.indexOf('-')
+    if (idx === -1) {
+        idx = str.indexOf('|')
+        if (idx === -1) {
+            idx = str.indexOf(':')
+            if (idx === -1) idx = 0
+        }
+    }
+    var idx2 = str.indexOf('(')
+    if (idx2 === -1) {
+        idx2 = str.indexOf('[')
+        if (idx2 === -1) idx2 = Infinity
+    }
+    var idx3 = idx2 > idx ? idx2 : Infinity
+    return {
+        artist: str.slice(0, Math.min(idx, idx2)),
+        track: str.slice(idx + 1, idx3)
+    }
+}
+
+async function query(filterBy = { txt: '' }) {
     try {
         const criteria = {
             // vendor: { $regex: filterBy.txt, $options: 'i' }
@@ -82,7 +118,7 @@ async function addCarMsg(carId, msg) {
 async function removeCarMsg(carId, msgId) {
     try {
         const collection = await dbService.getCollection('car')
-        await collection.updateOne({ _id: ObjectId(carId) }, { $pull: { msgs: {id: msgId} } })
+        await collection.updateOne({ _id: ObjectId(carId) }, { $pull: { msgs: { id: msgId } } })
         return msgId
     } catch (err) {
         logger.error(`cannot add car msg ${carId}`, err)
@@ -91,11 +127,6 @@ async function removeCarMsg(carId, msgId) {
 }
 
 module.exports = {
-    remove,
-    query,
-    getById,
-    add,
-    update,
-    addCarMsg,
-    removeCarMsg
+    getLyrics,
+    getTrackObject
 }

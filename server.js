@@ -26,6 +26,7 @@ const userRoutes = require('./api/user/user.routes')
 const reviewRoutes = require('./api/review/review.routes')
 const carRoutes = require('./api/car/car.routes')
 const stationRoutes = require('./api/station/station.routes')
+const lyricsRoutes = require('./api/lyrics/lyrics.routes')
 const {setupSocketAPI} = require('./services/socket.service')
 
 // routes
@@ -34,9 +35,8 @@ app.all('*', setupAsyncLocalStorage)
 
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
-app.use('/api/review', reviewRoutes)
-app.use('/api/car', carRoutes)
 app.use('/api/station', stationRoutes)
+app.use('/api/lyrics', lyricsRoutes)
 setupSocketAPI(http)
 
 // Make every server-side-route to match the index.html
