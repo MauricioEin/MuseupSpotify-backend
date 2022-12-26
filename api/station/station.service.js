@@ -5,7 +5,6 @@ const ObjectId = require('mongodb').ObjectId
 
 async function query(filterBy = { txt: '' }) {
     try {
-        // logger.debug('FILTERBY!', filterBy)
         const criteria = {
             name: { $regex: filterBy.name || '', $options: 'i' },
         }
@@ -13,6 +12,8 @@ async function query(filterBy = { txt: '' }) {
         if (filterBy.others) {
             criteria['owner._id'] = { "$ne": filterBy.others }
             criteria['owner.username'] = { "$ne": "MuseUp" }
+            criteria['songs.2'] = { "$exists": true }
+
         }
         if (filterBy.owner) criteria['owner._id'] = filterBy.owner
         if (filterBy.owner) logger.debug('CRITERIA', criteria)
