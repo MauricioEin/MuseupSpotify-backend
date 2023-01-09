@@ -8,7 +8,6 @@ const utilService = require('../../services/util.service')
 async function getLyrics(apiKey, artist, track, searchStr) {
     var trackRes = await axios.get(`https://api.musixmatch.com/ws/1.1/track.search?apikey=${apiKey}&q_artist=Doja%20Cat&q_artist=${artist}&q_track=${track}&f_has_lyrics=1`)
     var trackId = trackRes.data.message.body.track_list[0]?.track?.track_id || null
-    console.log('TRACKID:', trackId)
     if (!trackId) {
         trackRes = await axios.get(`https://api.musixmatch.com/ws/1.1/track.search?apikey=${apiKey}&q_artist=Doja%20Cat&q=${searchStr}&f_has_lyrics=1`)
         var trackId = trackRes.data.message.body.track_list[0]?.track?.track_id || null
