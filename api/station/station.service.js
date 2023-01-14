@@ -4,6 +4,7 @@ const utilService = require('../../services/util.service')
 const ObjectId = require('mongodb').ObjectId
 
 async function query(filterBy = { txt: '' }) {
+    logger.debug('FILTERBY:',filterBy)
     try {
         const criteria = {
             name: { $regex: filterBy.name || '', $options: 'i' },
@@ -16,7 +17,6 @@ async function query(filterBy = { txt: '' }) {
 
         }
         if (filterBy.owner) criteria['owner._id'] = filterBy.owner
-        if (filterBy.owner) logger.debug('CRITERIA', criteria)
 
         const collection = await dbService.getCollection('station')
         // logger.debug('collection')
